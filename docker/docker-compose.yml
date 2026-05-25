@@ -1,0 +1,48 @@
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: es_books
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1g"
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: backend_books
+    env_file: ../backend/.env
+    environment:
+      - ES_HOST=http://elasticsearch:9200
+      - PDF_DIR=/data/pdfs
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../data:/data:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: frontend_books
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  es_data:

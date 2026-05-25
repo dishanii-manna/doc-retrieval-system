@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --parchment: #f5f0e8;
+  --ink: #1a1208;
+  --sepia: #8b6914;
+  --sepia-light: #c9a84c;
+}
+
+body {
+  background-color: var(--parchment);
+  color: var(--ink);
+  font-family: 'Source Serif 4', Georgia, serif;
+}
+
+mark {
+  background: #ffe066;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #e8e0d0; }
+::-webkit-scrollbar-thumb { background: var(--sepia); border-radius: 3px; }
